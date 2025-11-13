@@ -28,15 +28,17 @@ def consulta_select_todo():
     for x in cursor:
         print(x)
     return cursor.fetchall()
-def insertar_reserva(ID_habitacion, ID_cliente, fecha_entrada, fecha_salida):
+def insertar_reserva(ID_habitacion, ID_cliente, año_entrada, mes_entrada, dia_entrada, año_salida, mes_salida, dia_salida):
+    fecha_entrada = datetime.date(año_entrada, mes_entrada, dia_entrada)
+    fecha_salida = datetime.date(año_salida, mes_salida, dia_salida)
     consulta = "INSERT INTO reservas (ID_habitacion, ID_cliente, fecha_entrada, fecha_salida) VALUES (%s,%s,%s,%s)"
     cursor.execute(consulta,(ID_habitacion, ID_cliente, fecha_entrada, fecha_salida))
     cnx.commit()
     return cursor.lastrowid
-def insertar_cliente(nombre, DNI, telefono, historial_reservas):
+def insertar_cliente(nombre, DNI, telefono, ultima_reserva):
 
     sql = "INSERT INTO clientes (nombre, DNI, telefono, historial_reservas)VALUES( %s, %s, %s, %s)"
-    cursor.execute(sql,(nombre, DNI, telefono, historial_reservas))
+    cursor.execute(sql,(nombre, DNI, telefono, ultima_reserva))
     cnx.commit()
     return cursor.lastrowid
 def consulta_select_dni(DNI):
@@ -49,23 +51,36 @@ def Menu():
     while seguimos:
         Opcion1 = int(input("""
         --------------------------
-        | 1-ver beneficios       |
+        | 1-Show All Clients     |
         | 2-buscar cliente       |
         | 3-reservar habitaciones|
         | 4-solicitar servicios  |
-        | 5-Kill Your self       | 
+        | 5-ver beneficios       |
+        | 6-Kill Your self       | 
         --------------------------
         ingrese un opcion: """))
         if Opcion1 == 1:
-            print("beneficios")
-        elif Opcion1 == 2:
             print(consulta_select_todo())
+        elif Opcion1 == 2:
+            nombre = input("Ingrese el nombre: ")
+            DNI = int(input("Ingrese el DNI: "))
+            telefono = input("Ingrese el Telefono: ")
+            insertar_cliente(nombre, DNI, telefono,)
         elif Opcion1 == 3:
-            insertar_reserva()
-            print("Se ha reservado correctamente")
+            id = int(input("ingrese id habitacion: "))
+            id_cliente = int(input("ingrese id cliente: "))
+            año_entrada = int(input("ingrese año entrada: "))
+            mes_entrada = int(input("ingrese mes entrada: "))
+            dia_entrada = int(input("ingrese día entrada: "))
+            año_salida = int(input("ingrese año salida: "))
+            mes_salida = int(input("ingrese mes salida: "))
+            dia_salida = int(input("ingrese día salida: "))
+            insertar_reserva(id,id_cliente,año_entrada,mes_entrada, dia_entrada, año_salida, mes_salida, dia_salida)
         elif Opcion1 == 4:
             print("beneficios")
         elif Opcion1 == 5:
+            print("beneficios")
+        elif Opcion1 == 6:
             print("cerrando programa")
             seguimos = False
 
@@ -73,6 +88,4 @@ def Menu():
         cnx.close()
         print("La conexión a la base de datos ha sido cerrada.")
 
-fecha_entrada = input("Fecha")
-fecha_entrada = fecha_entrada.strftime('%d/%m/%Y')
-print(fecha_entrada)
+Menu()
