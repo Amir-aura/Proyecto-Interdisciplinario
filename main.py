@@ -6,7 +6,6 @@ from mysql.connector import errorcode
 cursor = None
 cnx = None
 
-
 def conectarBase():
     global cnx, cursor
 
@@ -23,10 +22,9 @@ def conectarBase():
         else:
             print(err)
 def consulta_select_todo():
+    global cnx,cursor
     Consulta = "SELECT * FROM clientes;"
     cursor.execute(Consulta)
-    for x in cursor:
-        print(x)
     return cursor.fetchall()
 def insertar_reserva(ID_habitacion, ID_cliente, año_entrada, mes_entrada, dia_entrada, año_salida, mes_salida, dia_salida):
     fecha_entrada = datetime.date(año_entrada, mes_entrada, dia_entrada)
@@ -35,10 +33,16 @@ def insertar_reserva(ID_habitacion, ID_cliente, año_entrada, mes_entrada, dia_e
     cursor.execute(consulta,(ID_habitacion, ID_cliente, fecha_entrada, fecha_salida))
     cnx.commit()
     return cursor.lastrowid
-def insertar_cliente(nombre, DNI, telefono, ultima_reserva):
-
-    sql = "INSERT INTO clientes (nombre, DNI, telefono, historial_reservas)VALUES( %s, %s, %s, %s)"
-    cursor.execute(sql,(nombre, DNI, telefono, ultima_reserva))
+def insertar_cliente(nombre, DNI, telefono, año_entrada, mes_entrada, dia_entrada):
+    usuarios = consulta_select_todo()
+    print(usuarios)
+    for usuario in usuarios:
+        if usuario["DNI"] == DNI:
+            print("El Cliente ya existe")
+            return None
+    fecha_entrada = datetime.date(año_entrada, mes_entrada, dia_entrada)
+    sql = "INSERT INTO clientes (nombre, DNI, telefono, ultima_reserva)VALUES( %s, %s, %s, %s)"
+    cursor.execute(sql,(nombre, DNI, telefono,fecha_entrada))
     cnx.commit()
     return cursor.lastrowid
 def consulta_select_dni(DNI):
@@ -52,7 +56,7 @@ def Menu():
         Opcion1 = int(input("""
         --------------------------
         | 1-Show All Clients     |
-        | 2-buscar cliente       |
+        | 2-ingresar cliente     |
         | 3-reservar habitaciones|
         | 4-solicitar servicios  |
         | 5-ver beneficios       |
@@ -63,9 +67,12 @@ def Menu():
             print(consulta_select_todo())
         elif Opcion1 == 2:
             nombre = input("Ingrese el nombre: ")
-            DNI = int(input("Ingrese el DNI: "))
+            DNI = input("Ingrese el DNI: ")
             telefono = input("Ingrese el Telefono: ")
-            insertar_cliente(nombre, DNI, telefono,)
+            año_entrada = int(input("ingrese año entrada: "))
+            mes_entrada = int(input("ingrese mes entrada: "))
+            dia_entrada = int(input("ingrese día entrada: "))
+            insertar_cliente(nombre, DNI, telefono,año_entrada, mes_entrada, dia_entrada)
         elif Opcion1 == 3:
             id = int(input("ingrese id habitacion: "))
             id_cliente = int(input("ingrese id cliente: "))
@@ -77,7 +84,7 @@ def Menu():
             dia_salida = int(input("ingrese día salida: "))
             insertar_reserva(id,id_cliente,año_entrada,mes_entrada, dia_entrada, año_salida, mes_salida, dia_salida)
         elif Opcion1 == 4:
-            print("beneficios")
+            print("lel")
         elif Opcion1 == 5:
             print("beneficios")
         elif Opcion1 == 6:
@@ -89,3 +96,4 @@ def Menu():
         print("La conexión a la base de datos ha sido cerrada.")
 
 Menu()
+
