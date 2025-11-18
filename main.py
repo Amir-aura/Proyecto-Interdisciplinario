@@ -49,6 +49,19 @@ def consulta_select_dni(DNI):
     Consulta = f"SELECT * FROM reservas WHERE ID_cliente in(SELECT ID FROM clientes WHERE DNI = {DNI};"
     cursor.execute(Consulta)
     return cursor.fetchall
+def consulta_select_todo_servicios():
+    global cnx,cursor
+    Consulta = "SELECT * FROM servicios;"
+    cursor.execute(Consulta)
+    return cursor.fetchall()
+def consulta_update_reserva(ID_Reserva, ID):
+    Consulta = f"UPDATE servicios SET ID_Reserva ={ID_Reserva} WHERE ID = {ID} "
+    cursor.execute(Consulta)
+    return cursor.fetchall
+def consulta_select_servicio(ID):
+    Consulta = f"SELECT * FROM reservas WHERE ID = {ID};"
+    cursor.execute(Consulta)
+    return cursor.fetchall
 def Menu():
     conectarBase()
     seguimos = True
@@ -58,8 +71,8 @@ def Menu():
         | 1-Show All Clients     |
         | 2-ingresar cliente     |
         | 3-reservar habitaciones|
-        | 4-solicitar servicios  |
-        | 5-ver beneficios       |
+        | 4-ver servicios        |
+        | 5-solicitar servicios  |
         | 6-Kill Your self       | 
         --------------------------
         ingrese un opcion: """))
@@ -84,9 +97,23 @@ def Menu():
             dia_salida = int(input("ingrese día salida: "))
             insertar_reserva(id,id_cliente,año_entrada,mes_entrada, dia_entrada, año_salida, mes_salida, dia_salida)
         elif Opcion1 == 4:
-            print("lel")
+            print(consulta_select_todo_servicios())
         elif Opcion1 == 5:
-            print("beneficios")
+            DNI = input("Ingrese el DNI: ")
+            reserva = consulta_select_dni(DNI)
+            Opcion1 = int(input("""
+                   --------------------------
+                   | 1-Desayuno buffet      |
+                   | 2-Spa                  |
+                   | 3-Servicio de limmpieza|
+                   | 4-Pileta               |
+                   | 5-estacionamiento      |
+                   | 6-servicios tecnicos   |
+                   | 7-desayuno a la cama   | 
+                   --------------------------
+                   ingrese un opcion: """))
+            servicio = consulta_select_servicio(Opcion1)
+            consulta_update_reserva(reserva["ID"],servicio["ID"])
         elif Opcion1 == 6:
             print("cerrando programa")
             seguimos = False
