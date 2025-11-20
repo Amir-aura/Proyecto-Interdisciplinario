@@ -25,12 +25,14 @@ def consulta_select_todo():
     global cnx,cursor
     Consulta = "SELECT * FROM clientes;"
     cursor.execute(Consulta)
+    for x in cursor:
+        print(x)
     return cursor.fetchall()
-def insertar_reserva(ID_habitacion, ID_cliente, año_entrada, mes_entrada, dia_entrada, año_salida, mes_salida, dia_salida):
+def insertar_reserva_habitacion(ID_habitacion, ID_cliente, año_entrada, mes_entrada, dia_entrada, año_salida, mes_salida, dia_salida,ID_servicio):
     fecha_entrada = datetime.date(año_entrada, mes_entrada, dia_entrada)
     fecha_salida = datetime.date(año_salida, mes_salida, dia_salida)
-    consulta = "INSERT INTO reservas (ID_habitacion, ID_cliente, fecha_entrada, fecha_salida) VALUES (%s,%s,%s,%s)"
-    cursor.execute(consulta,(ID_habitacion, ID_cliente, fecha_entrada, fecha_salida))
+    consulta = "INSERT INTO reservas (ID_habitacion, ID_cliente, fecha_entrada, fecha_salida,ID_servicio) VALUES (%s,%s,%s,%s)"
+    cursor.execute(consulta,(ID_habitacion, ID_cliente, fecha_entrada, fecha_salida,ID_servicio))
     cnx.commit()
     return cursor.lastrowid
 def insertar_cliente(nombre, DNI, telefono, año_entrada, mes_entrada, dia_entrada):
@@ -53,15 +55,21 @@ def consulta_select_todo_servicios():
     global cnx,cursor
     Consulta = "SELECT * FROM servicios;"
     cursor.execute(Consulta)
+    for x in cursor:
+        print(x)
     return cursor.fetchall()
 def consulta_update_reserva(ID_Reserva, ID):
     Consulta = f"UPDATE servicios SET ID_Reserva ={ID_Reserva} WHERE ID = {ID} "
     cursor.execute(Consulta)
     return cursor.fetchall
-def consulta_select_servicio(ID):
-    Consulta = f"SELECT * FROM reservas WHERE ID = {ID};"
-    cursor.execute(Consulta)
-    return cursor.fetchall
+def insertar_reserva(ID_habitacion, ID_cliente, año_entrada, mes_entrada, dia_entrada, año_salida, mes_salida, dia_salida, ID_servicio):
+    fecha_entrada = datetime.date(año_entrada, mes_entrada, dia_entrada)
+    fecha_salida = datetime.date(año_salida, mes_salida, dia_salida)
+    consulta = "INSERT INTO reservas (ID_habitacion, ID_cliente, fecha_entrada, fecha_salida, ID_servicio) VALUES (%s,%s,%s,%s,%s)"
+    cursor.execute(consulta,(ID_habitacion, ID_cliente, fecha_entrada, fecha_salida, ID_servicio))
+    cnx.commit()
+    return cursor.lastrowid
+
 def Menu():
     conectarBase()
     seguimos = True
@@ -89,13 +97,14 @@ def Menu():
         elif Opcion1 == 3:
             id = int(input("ingrese id habitacion: "))
             id_cliente = int(input("ingrese id cliente: "))
+            ID_servicio = int(input("ingrese ID servicio: "))
             año_entrada = int(input("ingrese año entrada: "))
             mes_entrada = int(input("ingrese mes entrada: "))
             dia_entrada = int(input("ingrese día entrada: "))
             año_salida = int(input("ingrese año salida: "))
             mes_salida = int(input("ingrese mes salida: "))
             dia_salida = int(input("ingrese día salida: "))
-            insertar_reserva(id,id_cliente,año_entrada,mes_entrada, dia_entrada, año_salida, mes_salida, dia_salida)
+            insertar_reserva(id,id_cliente,año_entrada,mes_entrada, dia_entrada, año_salida, mes_salida, dia_salida,ID_servicio)
         elif Opcion1 == 4:
             print(consulta_select_todo_servicios())
         elif Opcion1 == 5:
@@ -128,5 +137,7 @@ def Menu():
         print("La conexión a la base de datos ha sido cerrada.")
 
 Menu()
+
+
 
 
