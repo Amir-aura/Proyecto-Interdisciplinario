@@ -99,21 +99,26 @@ def Menu():
         elif Opcion1 == 4:
             print(consulta_select_todo_servicios())
         elif Opcion1 == 5:
-            DNI = input("Ingrese el DNI: ")
-            reserva = consulta_select_dni(DNI)
-            Opcion1 = int(input("""
-                   --------------------------
-                   | 1-Desayuno buffet      |
-                   | 2-Spa                  |
-                   | 3-Servicio de limmpieza|
-                   | 4-Pileta               |
-                   | 5-estacionamiento      |
-                   | 6-servicios tecnicos   |
-                   | 7-desayuno a la cama   | 
-                   --------------------------
-                   ingrese un opcion: """))
-            servicio = consulta_select_servicio(Opcion1)
-            consulta_update_reserva(reserva["ID"],servicio["ID"])
+            id = int(input("ingrese id habitacion: "))
+            id_cliente = int(input("ingrese id cliente: "))
+            año_entrada = int(input("ingrese año entrada: "))
+            mes_entrada = int(input("ingrese mes entrada: "))
+            dia_entrada = int(input("ingrese día entrada: "))
+            año_salida = int(input("ingrese año salida: "))
+            mes_salida = int(input("ingrese mes salida: "))
+            dia_salida = int(input("ingrese día salida: "))
+            ID_servicio  = int(input("""
+                               --------------------------
+                               | 1-Desayuno buffet      |
+                               | 2-Spa                  |
+                               | 3-Servicio de limmpieza|
+                               | 4-Pileta               |
+                               | 5-estacionamiento      |
+                               | 6-servicios tecnicos   |
+                               | 7-desayuno a la cama   | 
+                               --------------------------
+                               ingrese un opcion: """))
+            insertar_reserva(id,id_cliente,año_entrada,mes_entrada, dia_entrada, año_salida, mes_salida, dia_salida,ID_servicio)
         elif Opcion1 == 6:
             print("cerrando programa")
             seguimos = False
@@ -123,4 +128,5 @@ def Menu():
         print("La conexión a la base de datos ha sido cerrada.")
 
 Menu()
+
 
